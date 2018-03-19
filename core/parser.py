@@ -70,6 +70,26 @@ class Parser:
             groups__types__id__in=self.attacker_property(package, "ship_type_id"),
             id__in=values
         ).exists()
+
+    def attacker_corporation_id(self, package):
+        values = self.filters.get("attacker_corporation_id")
+        return len(
+            set(
+                self.attacker_property(package, "alliance_id")
+            ).intersection(
+                set(values)
+            )
+        )
+
+    def attacker_alliance_id(self, package):
+        values = self.filters.get("attacker_alliance_id")
+        return len(
+            set(
+                self.attacker_property(package, "alliance_id")
+            ).intersection(
+                set(values)
+            )
+        )
         
 
     # Gets a specific property from the attackers
