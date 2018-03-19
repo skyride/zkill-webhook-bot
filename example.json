@@ -1,0 +1,14 @@
+[
+    {
+        "name": "intel-capitals",
+        "filters": {
+            "region_id": 10000002
+        },
+        "webhooks": [
+            {
+                "url": "https://example.com/webhook1",
+                "prefix": "@here"
+            }
+        ]
+    }
+]
