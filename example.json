@@ -2,7 +2,7 @@
     {
         "name": "intel-capitals",
         "filters": {
-            "region_id": 10000002
+            "isk": 20000
         },
         "webhooks": [
             {
