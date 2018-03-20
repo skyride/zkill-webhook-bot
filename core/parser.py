@@ -140,6 +140,17 @@ class Parser:
 
     def alliance_id(self, package):
         return self.attacker_alliance_id(package) or self.victim_alliance_id(package)
+
+
+    # Send webhook
+    def send(self, package):
+        for webhook in self.webhooks:
+            requests.post(
+                webhook.get("url"),
+                json={
+                    "content": "https://zkillboard.com/kill/%s/" % package['killID']
+                }
+            )
         
 
     # Gets a specific property from the attackers
