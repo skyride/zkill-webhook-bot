@@ -1,6 +1,6 @@
 import requests
 
-from sde.models import System, Group, Category
+from sde.models import System, Type, Group, Category
 
 
 # Parses a redisq object
@@ -90,6 +90,56 @@ class Parser:
                 set(values)
             )
         )
+
+    def victim_type_id(self, package):
+        values = self.filters.get("victim_type_id")
+        return package['killmail']['victim'].get("ship_type_id") in values
+
+    def victim_group_id(self, package):
+        values = self.filters.get("victim_group_id")
+        return Type.objects.filter(
+            id=package['killmail']['victim'].get("ship_type_id"),
+            group_id__in=values
+        ).exists()
+
+    def victim_category_id(self, package):
+        values = self.filters.get("victim_category_id")
+        return Type.objects.filter(
+            id=package['killmail']['victim'].get("ship_type_id"),
+            group__category_id__in=values
+        ).exists()
+
+    def victim_corporation_id(self, package):
+        values = self.filters.get("victim_corporation_id")
+        return package['killmail']['victim'].get("corporation_id") in values
+
+    def victim_alliance_id(self, package):
+        values = self.filters.get("victim_alliance_id")
+        return package['killmail']['victim'].get("alliance_id") in values
+
+    def wspace(self, package):
+        wspace = self.filters.get("wspace")[0]
+        if wspace:
+            return package['killmail']['solar_system_id'] > 31000000
+        else:
+            return not package['killmail']['solar_system_id'] > 31000000
+
+
+    # Combined
+    def type_id(self, package):
+        return self.attacker_type_id(package) or self.victim_type_id(package)
+
+    def group_id(self, package):
+        return self.attacker_group_id(package) or self.victim_group_id(package)
+
+    def category_id(self, package):
+        return self.attacker_category_id(package) or self.victim_category_id(package)
+
+    def corporation_id(self, package):
+        return self.attacker_corporation_id(package) or self.victim_corporation_id(package)
+
+    def alliance_id(self, package):
+        return self.attacker_alliance_id(package) or self.victim_alliance_id(package)
         
 
     # Gets a specific property from the attackers
