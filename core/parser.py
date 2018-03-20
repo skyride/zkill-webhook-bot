@@ -5,15 +5,14 @@ from sde.models import System, Type, Group, Category
 
 # Parses a redisq object
 class Parser:
-    filters = {}
-
     def __init__(self, config):
         # Webhooks should be a list of URLs
         self.name = config.get("name", "")
         self.webhooks = config.get("webhooks", [])
 
         # Normalise filters as lists
-        for key, values in config.get("filters", {}).items():
+        self.filters = {}
+        for key, values in config["filters"].items():
             if isinstance(values, list):
                 self.filters[key] = values
             else:
@@ -22,11 +21,12 @@ class Parser:
 
     def parse(self, package):
         # Return False if we find a filter it doesn't pass
-        for filter in self.filters.keys():
-            filter = getattr(self, filter)
-            if not filter(package):
+        for f in self.filters.keys():
+            f = getattr(self, f)
+            if not f(package):
                 return False
 
+        self.send(package)
         return True
 
 
@@ -148,7 +148,10 @@ class Parser:
             requests.post(
                 webhook.get("url"),
                 json={
-                    "content": "https://zkillboard.com/kill/%s/" % package['killID']
+                    "content": "%s https://zkillboard.com/kill/%s/" % (
+                        webhook.get("prefix", ""),
+                        package['killID']
+                    )
                 }
             )
         
