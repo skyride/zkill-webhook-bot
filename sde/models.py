@@ -47,7 +47,7 @@ class System(models.Model):
     international = models.BooleanField()
     security = models.FloatField()
     radius = models.FloatField(null=True)
-    sun = models.ForeignKey('Type', on_delete=models.CASCADE)
+    sun = models.ForeignKey('Type', null=True, on_delete=models.CASCADE)
     security_class = models.CharField(max_length=2, null=True)
 
     def __str__(self):
