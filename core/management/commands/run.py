@@ -38,3 +38,5 @@ class Command(BaseCommand):
                 if package is not None:
                     for parser in parsers:
                         print(package.get('killID'), parser.name, parser.parse(package))
+            else:
+                print("We get a strange HTTP Error %s, so lets chill for 60 seconds" % r.status_code)
