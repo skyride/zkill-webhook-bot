@@ -1,3 +1,4 @@
+import time
 import json
 import requests
 
@@ -28,7 +29,10 @@ class Command(BaseCommand):
             # Fetch killmail
             r = requests.get("https://redisq.zkillboard.com/listen.php?queueID=%s" % queue_id)
 
-            if r.status_code == 200:
+            if r.status_code == 429:
+                print("Received an HTTP 429, waiting 60 seconds before trying for another killmail")
+                time.sleep(60)
+            elif r.status_code == 200:
                 r = r.json()
                 package = r.get("package")
                 if package is not None:
